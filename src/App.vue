@@ -1,7 +1,7 @@
 <template>
   <header>
     <h1>Chow Chow Chess</h1>
-    <img id="header-img" src="./assets/chowchow.jpg" alt="chow chow" />
+    <img id="header-img" src="./assets/chow-chow.jpg" alt="chow chow" />
   </header>
 
   <section>
