@@ -11,7 +11,7 @@
       @mouseover="resetHover = true"
       @mouseleave="resetHover = false"
     >
-      <i class="fas fa-play fa-2x"></i>
+      <font-awesome-icon icon="play"></font-awesome-icon>
     </button>
 
     <button
@@ -19,7 +19,7 @@
       @mouseover="settingsHover = true"
       @mouseleave="settingsHover = false"
     >
-      <i class="fas fa-cog fa-2x"></i>
+      <font-awesome-icon icon="cog"></font-awesome-icon>
     </button>
   </section>
 
@@ -31,10 +31,8 @@
   <section v-if="state === 'colorSelect'">
     <div class="row">
       <div class="square square-b" @click="chooseColor('w')">
-        <i class="fa fa-chess-pawn fa-4x piece-w"></i>
       </div>
       <div class="square square-w" @click="chooseColor('b')">
-        <i class="fa fa-chess-pawn fa-4x piece-b"></i>
       </div>
     </div>
   </section>
