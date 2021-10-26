@@ -1,11 +1,39 @@
-import { createApp } from 'vue'
+import {
+  createApp
+} from 'vue'
 import App from './App.vue'
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlay, faCog } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import {
+  library
+} from '@fortawesome/fontawesome-svg-core'
+import {
+  faPlus,
+  faChevronLeft,
+  faChevronRight,
+  faCog,
+  faChessPawn,
+  faChessRook,
+  faChessKnight,
+  faChessBishop,
+  faChessQueen,
+  faChessKing
+} from '@fortawesome/free-solid-svg-icons'
+import {
+  FontAwesomeIcon
+} from '@fortawesome/vue-fontawesome'
 
-library.add(faPlay, faCog);
+library.add(
+  faPlus,
+  faChevronLeft,
+  faChevronRight,
+  faCog,
+  faChessPawn,
+  faChessRook,
+  faChessKnight,
+  faChessBishop,
+  faChessQueen,
+  faChessKing
+);
 
 const app = createApp(App);
 

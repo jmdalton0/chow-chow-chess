@@ -1,55 +1,28 @@
 <template>
   <header>
     <h1>Chow Chow Chess</h1>
-    <img id="header-img" src="./assets/chow-chow.jpg" alt="chow chow" />
+    <img src="./assets/chow-chow.jpg" alt="chow chow" />
   </header>
 
-  <section>
-    <h2>{{ message }}</h2>
-    <button
-      @click="reset"
-      @mouseover="resetHover = true"
-      @mouseleave="resetHover = false"
-    >
-      <font-awesome-icon icon="play"></font-awesome-icon>
-    </button>
+  <nav>
+    <control icon="plus" @click="state = 'colorSelect'"></control>
+    <control icon="chevron-left"></control>
+    <control icon="chevron-right"></control>
+    <control icon="cog"></control>
+  </nav>
 
-    <button
-      @click="toggleSettings"
-      @mouseover="settingsHover = true"
-      @mouseleave="settingsHover = false"
-    >
-      <font-awesome-icon icon="cog"></font-awesome-icon>
-    </button>
-  </section>
+  <main>
 
-  <section v-if="state === 'settings'">
-    <h2>Engine Time in Seconds</h2>
-    <button @click="saveSettings">save</button>
-  </section>
+    <section v-show="state === 'colorSelect'">
+      <color-choice color="white" @click="chooseColor"></color-choice>
+      <color-choice color="black" @click="chooseColor"></color-choice>
+    </section>
 
-  <section v-if="state === 'colorSelect'">
-    <div class="row">
-      <div class="square square-b" @click="chooseColor('w')">
-      </div>
-      <div class="square square-w" @click="chooseColor('b')">
-      </div>
-    </div>
-  </section>
+    <section id="board" v-show="state === 'play'">
+      <board></board>
+    </section>
 
-  <section v-if="state === 'play'">
-    <div class="row" v-for="i in SIZE" :key="i">
-      <div
-        class="square"
-        :class="(squareColor(i, j), isChosen(i, j) ? 'chosen' : '')"
-        v-for="j in SIZE"
-        :key="j"
-        @click="squareClick(i, j)"
-      >
-        <i :class="piece(i, j)"></i>
-      </div>
-    </div>
-  </section>
+  </main>
 
   <footer>
     <h6><a href="">GitHub</a></h6>
@@ -70,109 +43,26 @@
 </template>
 
 <script>
+import Control from "./components/Control.vue";
+import Board from "./components/Board.vue";
+import ColorChoice from "./components/ColorChoice.vue";
+
 export default {
+  components: { Control, Board, ColorChoice },
   name: "App",
   data() {
     return {
-      SIZE: 8,
-      state: "colorSelect",
-      prevState: "colorSelect",
-      resetHover: false,
-      settingsHover: false,
-      playerColor: null,
-      board: [],
-      chosenPiece: null,
+      state: 'colorSelect',
+      prevState: 'colorSelect',
+      color: '',
     };
   },
   methods: {
-    reset() {
-      this.state = "colorSelect";
-    },
     chooseColor(color) {
-      this.playerColor = color;
-      let blanks = new Array(this.SIZE * 4).fill("ee");
-      let wPawns = new Array(this.SIZE).fill("wp");
-      let bPawns = new Array(this.SIZE).fill("bp");
-      let wPieces = ["wr", "wn", "wb", "wq", "wk", "wb", "wn", "wr"];
-      let bPieces = ["br", "bn", "bb", "bq", "bk", "bb", "bn", "br"];
-      this.board = bPieces
-        .concat(bPawns)
-        .concat(blanks)
-        .concat(wPawns)
-        .concat(wPieces);
-      if (this.playerColor === "b") {
-        this.board = this.board.reverse();
-      }
-      this.state = "play";
-    },
-    toggleSettings() {
-      if (this.state === "settings") {
-        this.state = this.prevState;
-      } else {
-        this.prevState = this.state;
-        this.state = "settings";
-      }
-    },
-    saveSettings() {
-      this.state = "colorSelect";
-    },
-    squareColor(i, j) {
-      if ((i % 2) + (j % 2) === 1) {
-        return "square-b";
-      } else {
-        return "square-w";
-      }
-    },
-    piece(i, j) {
-      let piece = this.board[(i - 1) * this.SIZE + (j - 1)];
-      let pieceColor = piece.charAt(0);
-      if (pieceColor === "w") {
-        pieceColor = "piece-w";
-      } else if (pieceColor === "b") {
-        pieceColor = "piece-b";
-      } else {
-        pieceColor = "";
-      }
-      let pieceType = piece.charAt(1);
-      if (pieceType === "p") {
-        pieceType = "fa fa-chess-pawn fa-4x";
-      } else if (pieceType === "r") {
-        pieceType = "fa fa-chess-rook fa-4x";
-      } else if (pieceType === "n") {
-        pieceType = "fa fa-chess-knight fa-4x";
-      } else if (pieceType === "b") {
-        pieceType = "fa fa-chess-bishop fa-4x";
-      } else if (pieceType === "q") {
-        pieceType = "fa fa-chess-queen fa-4x";
-      } else if (pieceType === "k") {
-        pieceType = "fa fa-chess-king fa-4x";
-      } else {
-        pieceType = "";
-      }
-      return pieceType.concat(" ", pieceColor);
-    },
-    squareClick(i, j) {
-      if (this.chosenPiece === null) {
-        this.chosenPiece = (i - 1) * this.SIZE + (j - 1);
-      } else {
-        this.chosenPiece = null;
-      }
-    },
-    isChosen(i, j) {
-      return this.chosenPiece === (i - 1) * this.SIZE + (j - 1);
-    },
-  },
-  computed: {
-    message() {
-      if (this.resetHover === true) {
-        return "Restart";
-      } else if (this.settingsHover === true) {
-        return "Settings";
-      } else {
-        return "";
-      }
-    },
-  },
+      this.color = color;
+      this.state = 'play';
+    }
+  }
 };
 </script>
 
@@ -195,114 +85,73 @@ body {
   color: var(--text);
   width: 45rem;
   margin: auto;
+  padding: 0 1rem;
+}
+
+header {
+  display: flex;
+  text-align: start;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+main {
+  height: 45rem;
+}
+
+section {
+  border: 0.5rem solid var(--text);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+footer {
+  text-align: center;
+  margin: 1rem 0;
 }
 
 h1 {
-  font-size: 4em;
+  font-size: 3.8em;
   line-height: 50px;
 }
 
 h6 {
-  font-size: 0.9em;
+  font-size: 0.8em;
   font-weight: normal;
-  margin-bottom: 0.5rem;
-}
-
-a:hover,
-button:hover,
-.square:hover {
-  opacity: 0.5;
+  margin-bottom: 0.3rem;
 }
 
 a {
   text-decoration: none;
   color: var(--text);
+  transition-duration: 0.2s;
 }
 
-button {
-  margin-left: 1rem;
-  color: var(--text);
-  text-decoration: none;
-  background: transparent;
-  border: none;
-}
-
-button:hover {
+a:hover {
   opacity: 0.5;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  text-align: start;
-  margin: 1rem 0;
-}
-
-footer {
-  text-align: center;
-  margin: 3rem 0;
-}
-
-section {
-  border: 1rem solid var(--text);
-  border-radius: 1rem;
-}
-
-.row {
-  display: flex;
-  flex-direction: row;
-}
-
-.square {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 5.5em;
-  height: 5.5em;
-}
-
-.square-w {
-  background: var(--square-white);
-}
-
-.square-b {
-  background: var(--square-black);
-}
-
-.piece-w {
-  color: var(--white);
-}
-
-.piece-b {
-  color: var(--black);
-}
-
-.chosen {
-  opacity: 0.5;
-}
-
-#app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin: 1rem 0;
-}
-
-#header-img {
+img {
   align-self: flex-end;
+  margin-left: 0.5rem;
   width: 8rem;
   border-radius: 1rem;
 }
 
-#controls {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  height: 3rem;
-  margin: 0 0 1rem 0;
-  padding: 0 1rem;
+#board {
+  height: 45rem;
+  box-sizing: border-box;
 }
 </style>
