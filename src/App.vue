@@ -25,7 +25,12 @@
   </main>
 
   <footer>
-    <h6><a href="">GitHub</a></h6>
+    <h6>
+      <a
+        href="https://github.com/jmdalton0/chow-chow-chess"
+        >GitHub</a
+      >
+    </h6>
     <h6>Created by <a href="">Jesse Dalton</a></h6>
     <h6>
       Photo by
