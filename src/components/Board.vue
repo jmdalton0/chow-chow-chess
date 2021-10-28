@@ -9,9 +9,7 @@
         @click="handleSquareClick(i, j)"
       >
         <piece
-          :color="getColor(i, j)"
           :piece="getPiece(i, j)"
-          :position="getPosition(i, j)"
         ></piece>
       </button>
     </div>
@@ -29,7 +27,6 @@ export default {
     return {
       board: [],
       chosen: null,
-      newPosition: null,
     };
   },
   props: {
@@ -56,20 +53,13 @@ export default {
     index(i, j) {
       return (i - 1) * 8 + (j - 1);
     },
-    getColor(i, j) {
-      return this.board[this.index(i, j)].charAt(0);
-    },
     getPiece(i, j) {
-      return this.board[this.index(i, j)].charAt(1);
-    },
-    getPosition(i, j) {
-      if (this.index(i, j) === this.newPosition) {
-        return this.newPosition;
-      }
+      return this.board[this.index(i, j)];
     },
     handleSquareClick(i, j) {
       if (this.chosen) {
-        this.newPosition = this.index(i, j);
+        this.board[this.index(i, j)] = this.board[this.chosen];
+        this.board[this.chosen] = 'ee';
         this.chosen = null;
       } else {
         this.chosen = this.index(i, j);

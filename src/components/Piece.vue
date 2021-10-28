@@ -1,7 +1,7 @@
 <template>
   <font-awesome-icon
     :class="color"
-    :icon="pieceIcon"
+    :icon="icon"
     size="4x"
   ></font-awesome-icon>
 </template>
@@ -10,42 +10,30 @@
 export default {
   name: "Piece",
   props: {
-    color: {
-      type: String,
-      required: true,
-      validate: function (v) {
-        return v === "w" || v === "b" || v === "e";
-      },
-    },
     piece: {
       type: String,
       required: true,
-      validate: function (v) {
-        return (
-          v === "p" ||
-          v === "r" ||
-          v === "n" ||
-          v === "b" ||
-          v === "q" ||
-          v === "k" ||
-          v === "e"
-        );
-      },
     },
   },
   computed: {
-    pieceIcon() {
-      if (this.piece === "p") {
+    color() {
+      return this.piece.charAt(0);
+    },
+    type() {
+      return this.piece.charAt(1);
+    },
+    icon() {
+      if (this.type === "p") {
         return "chess-pawn";
-      } else if (this.piece === "r") {
+      } else if (this.type === "r") {
         return "chess-rook";
-      } else if (this.piece === "n") {
+      } else if (this.type === "n") {
         return "chess-knight";
-      } else if (this.piece === "b") {
+      } else if (this.type === "b") {
         return "chess-bishop";
-      } else if (this.piece === "q") {
+      } else if (this.type === "q") {
         return "chess-queen";
-      } else if (this.piece === "k") {
+      } else if (this.type === "k") {
         return "chess-king";
       } else {
         return "exclamation";
@@ -65,6 +53,6 @@ export default {
 }
 
 .e {
-  display: none;
+  color: red;
 }
 </style>
