@@ -5,21 +5,21 @@
   </header>
 
   <nav>
-    <control icon="plus" @click="state = 'colorSelect'"></control>
-    <control icon="chevron-left"></control>
-    <control icon="chevron-right"></control>
-    <control icon="cog"></control>
+    <action icon="plus" @click="state = 'colorSelect'"></action>
+    <action icon="chevron-left"></action>
+    <action icon="chevron-right"></action>
+    <action icon="cog"></action>
   </nav>
 
   <main>
 
-    <section v-show="state === 'colorSelect'">
-      <color-choice color="white" @click="chooseColor"></color-choice>
-      <color-choice color="black" @click="chooseColor"></color-choice>
+    <section v-if="state === 'colorSelect'">
+      <player-choice color="white" @choice="choosePlayer"></player-choice>
+      <player-choice color="black" @choice="choosePlayer"></player-choice>
     </section>
 
-    <section id="board" v-show="state === 'play'">
-      <board></board>
+    <section id="board" v-if="state === 'play'">
+      <board :player="player"></board>
     </section>
 
   </main>
@@ -48,23 +48,23 @@
 </template>
 
 <script>
-import Control from "./components/Control.vue";
+import Action from "./components/Action.vue";
 import Board from "./components/Board.vue";
-import ColorChoice from "./components/ColorChoice.vue";
+import PlayerChoice from "./components/PlayerChoice.vue";
 
 export default {
-  components: { Control, Board, ColorChoice },
+  components: { Action, Board, PlayerChoice },
   name: "App",
   data() {
     return {
       state: 'colorSelect',
       prevState: 'colorSelect',
-      color: '',
+      player: null
     };
   },
   methods: {
-    chooseColor(color) {
-      this.color = color;
+    choosePlayer(player) {
+      this.player = player;
       this.state = 'play';
     }
   }
@@ -74,10 +74,11 @@ export default {
 <style>
 :root {
   --text: #205060;
-  --square-white: #b0b5bf;
-  --square-black: #80858f;
-  --white: #e0e5ef;
-  --black: #50555f;
+  --square-white: #90959f;
+  --square-black: #70757f;
+  --square-grey: #80858f;
+  --white: #f0f5ff;
+  --black: #40454f;
 }
 
 * {

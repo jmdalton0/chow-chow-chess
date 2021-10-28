@@ -1,5 +1,5 @@
 <template>
-  <button :class="color" @click="emit">
+  <button :class="color" @click="choosePlayer">
     <font-awesome-icon
       :icon="['fas', 'chess-pawn']"
       size="4x"
@@ -9,16 +9,25 @@
 
 <script>
 export default {
-  methods: {
-    emit() {
-      this.$emit('click', this.color);
-    }
+  name: "ColorChoice",
+  props: {
+    color: {
+      type: String,
+      required: true,
+      validator: function (v) {
+        return v === "white" || v === "black";
+      },
+    },
   },
-  props: ['color']
+  methods: {
+    choosePlayer() {
+      this.$emit("choice", this.color);
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
 button {
   width: 50%;
   padding: 2rem 0;
@@ -27,11 +36,11 @@ button {
 }
 
 button:hover {
-  opacity: 0.5;
+  background: var(--square-grey);
 }
 
 button:active {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .white {

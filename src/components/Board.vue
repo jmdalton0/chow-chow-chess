@@ -1,66 +1,88 @@
 <template>
   <div class="board">
     <div v-for="i in 8" :key="i" class="row">
-      <div v-for="j in 8" :key="j">
-        <div class="square" :class="squareColor(row, square)">
-          <p>{{ square }}</p>
-        </div>
-      </div>
+      <button
+        v-for="j in 8"
+        :key="j"
+        class="square"
+        :class="squareColor(i, j)"
+        @click="handleSquareClick(i, j)"
+      >
+        <piece
+          :color="getColor(i, j)"
+          :piece="getPiece(i, j)"
+          :position="getPosition(i, j)"
+        ></piece>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import Piece from "./Piece.vue";
+import BoardController from "/src/controllers/BoardController.js";
+
 export default {
+  components: { Piece },
+  name: "Board",
   data() {
     return {
       board: [],
-      chosenPiece: null,
+      chosen: null,
+      newPosition: null,
     };
+  },
+  props: {
+    player: {
+      type: String,
+      required: true,
+      validate: function (v) {
+        return v === "black" || v === "white";
+      },
+    },
   },
   methods: {
     squareColor(i, j) {
+      let classList = "";
+      if (this.chosen === this.index(i, j)) {
+        classList = "chosen";
+      }
       if ((i % 2) + (j % 2) === 1) {
-        return "square-b";
+        return classList.concat(" square-b");
       } else {
-        return "square-w";
+        return classList.concat(" square-w");
       }
     },
-    /*
-    piece(i, j) {
-      let piece = this.board[(i - 1) * this.SIZE + (j - 1)];
-      let pieceColor = piece.charAt(0);
-      if (pieceColor === "w") {
-        pieceColor = "piece-w";
-      } else if (pieceColor === "b") {
-        pieceColor = "piece-b";
-      } else {
-        pieceColor = "";
-      }
-      let pieceType = piece.charAt(1);
-      if (pieceType === "p") {
-        pieceType = "fa fa-chess-pawn fa-4x";
-      } else if (pieceType === "r") {
-        pieceType = "fa fa-chess-rook fa-4x";
-      } else if (pieceType === "n") {
-        pieceType = "fa fa-chess-knight fa-4x";
-      } else if (pieceType === "b") {
-        pieceType = "fa fa-chess-bishop fa-4x";
-      } else if (pieceType === "q") {
-        pieceType = "fa fa-chess-queen fa-4x";
-      } else if (pieceType === "k") {
-        pieceType = "fa fa-chess-king fa-4x";
-      } else {
-        pieceType = "";
-      }
-      return pieceType.concat(" ", pieceColor);
+    index(i, j) {
+      return (i - 1) * 8 + (j - 1);
     },
-	*/
+    getColor(i, j) {
+      return this.board[this.index(i, j)].charAt(0);
+    },
+    getPiece(i, j) {
+      return this.board[this.index(i, j)].charAt(1);
+    },
+    getPosition(i, j) {
+      if (this.index(i, j) === this.newPosition) {
+        return this.newPosition;
+      }
+    },
+    handleSquareClick(i, j) {
+      if (this.chosen) {
+        this.newPosition = this.index(i, j);
+        this.chosen = null;
+      } else {
+        this.chosen = this.index(i, j);
+      }
+    },
+  },
+  created() {
+    this.board = BoardController.generateBoard(this.player);
   },
 };
 </script>
 
-<style>
+<style scoped>
 .board {
   height: 100%;
 }
@@ -68,6 +90,8 @@ export default {
 .row {
   display: flex;
   flex-direction: row;
+  width: 100%;
+  height: 12.5%;
 }
 
 .square {
@@ -75,7 +99,16 @@ export default {
   justify-content: center;
   align-items: center;
   width: 12.5%;
-  height: 12.5%;
+  border: none;
+  transition-duration: 0.2s;
+}
+
+.square:hover {
+  background: var(--square-grey);
+}
+
+.square:active {
+  opacity: 0.8;
 }
 
 .square-w {
@@ -86,15 +119,7 @@ export default {
   background: var(--square-black);
 }
 
-.piece-w {
-  color: var(--white);
-}
-
-.piece-b {
-  color: var(--black);
-}
-
 .chosen {
-  opacity: 0.5;
+  background: var(--square-grey);
 }
 </style>

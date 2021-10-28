@@ -6,12 +6,13 @@
 
 <script>
 export default {
-  props: ["icon"],
+  name: "Action",
   methods: {
     handle() {
       this.$emit("click");
     },
   },
+  props: ["icon"],
 };
 </script>
 
@@ -20,7 +21,7 @@ button {
   width: 25%;
   padding: 1rem 0;
   color: var(--white);
-  background: var(--black);
+  background: var(--text);
   border: none;
   transition-duration: 0.2s;
 }
