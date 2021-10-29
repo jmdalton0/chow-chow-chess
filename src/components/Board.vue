@@ -1,24 +1,22 @@
 <template>
   <div class="board">
-    <div v-for="i in 8" :key="i" class="row">
-      <button
-        v-for="j in 8"
-        :key="j"
-        class="square"
-        :class="squareColor(i, j)"
-        @click="handleSquareClick(i, j)"
-      >
-        <piece
-          :piece="getPiece(i, j)"
-        ></piece>
-      </button>
+    <div v-for="(row, i) in board" :key="row" class="row">
+      <div v-for="(col, j) in row" :key="col" class="col" :class="color(i, j)">
+        <div
+          class="square"
+          :class="{ selected: isSelected(i, j), illegal: isIllegal(i, j) }"
+          @click="selectSquare(i, j)"
+        >
+          <piece :color="board[i][j].color" :type="board[i][j].type"></piece>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import Piece from "./Piece.vue";
+<script scoped>
 import BoardController from "/src/controllers/BoardController.js";
+import Piece from "./Piece.vue";
 
 export default {
   components: { Piece },
@@ -26,7 +24,9 @@ export default {
   data() {
     return {
       board: [],
-      chosen: null,
+      state: "select",
+      selected: [],
+      illegal: []
     };
   },
   props: {
@@ -34,36 +34,57 @@ export default {
       type: String,
       required: true,
       validate: function (v) {
-        return v === "black" || v === "white";
+        return v === "w" || v === "b";
       },
     },
   },
   methods: {
-    squareColor(i, j) {
-      let classList = "";
-      if (this.chosen === this.index(i, j)) {
-        classList = "chosen";
-      }
-      if ((i % 2) + (j % 2) === 1) {
-        return classList.concat(" square-b");
+    color(i, j) {
+      if (i % 2 ^ j % 2) {
+        return "col-b";
       } else {
-        return classList.concat(" square-w");
+        return "col-w";
       }
     },
-    index(i, j) {
-      return (i - 1) * 8 + (j - 1);
+    isSelected(i, j) {
+      return this.selected[0] === i && this.selected[1] === j;
     },
-    getPiece(i, j) {
-      return this.board[this.index(i, j)];
+    isIllegal(i, j) {
+      return this.illegal[0] === i && this.illegal[1] === j;
     },
-    handleSquareClick(i, j) {
-      if (this.chosen) {
-        this.board[this.index(i, j)] = this.board[this.chosen];
-        this.board[this.chosen] = 'ee';
-        this.chosen = null;
+    selectSquare(i, j) {
+      if (this.state === "select") {
+        this.select(i, j);
       } else {
-        this.chosen = this.index(i, j);
+        this.move(i, j);
       }
+    },
+    select(i, j) {
+      if (this.board[i][j].color === this.player) {
+        this.selected = [i, j];
+        this.state = "move";
+      }
+    },
+    move(i, j) {
+      if (this.board[i][j].color === this.player) {
+        this.selected = [i, j];
+      } else {
+        let vector = BoardController.validate(this.board, this.selected, [i,j]);
+        if (vector === false) {
+          this.illegal = [i, j];
+        } else {
+          this.movePiece(i, j, vector);
+        }
+      }
+    },
+    movePiece(i, j, vector) {
+      let u = this.selected[0];
+      let v = this.selected[1];
+      this.board[u][v].move = vector;
+      this.board[i][j] = this.board[u][v];
+      this.board[u][v] = { color: "e", type: "e" };
+      this.selected = [];
+      this.state = "select";
     },
   },
   created() {
@@ -74,6 +95,7 @@ export default {
 
 <style scoped>
 .board {
+  width: 100%;
   height: 100%;
 }
 
@@ -84,13 +106,25 @@ export default {
   height: 12.5%;
 }
 
+.col {
+  width: 12.5%;
+  border: none;
+}
+
+.col-w {
+  background: var(--square-white);
+}
+
+.col-b {
+  background: var(--square-black);
+}
+
 .square {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 12.5%;
-  border: none;
-  transition-duration: 0.2s;
+  width: 100%;
+  height: 100%;
 }
 
 .square:hover {
@@ -101,15 +135,23 @@ export default {
   opacity: 0.8;
 }
 
-.square-w {
-  background: var(--square-white);
-}
-
-.square-b {
-  background: var(--square-black);
-}
-
-.chosen {
+.selected {
   background: var(--square-grey);
+}
+
+.illegal {
+  animation-name: blink;
+  animation-duration: 0.08s;
+  animation-iteration-count: 4;
+  animation-direction: alternate;
+}
+
+@keyframes blink {
+  from {
+    background: var(--square-grey);
+  }
+  to {
+    background: #F0736B;
+  }
 }
 </style>

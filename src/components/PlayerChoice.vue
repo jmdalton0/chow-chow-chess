@@ -1,10 +1,10 @@
 <template>
-  <button :class="color" @click="choosePlayer">
+  <div :class="color" @click="choosePlayer">
     <font-awesome-icon
       :icon="['fas', 'chess-pawn']"
       size="4x"
     ></font-awesome-icon>
-  </button>
+  </div>
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
       type: String,
       required: true,
       validator: function (v) {
-        return v === "white" || v === "black";
+        return v === "w" || v === "b";
       },
     },
   },
@@ -28,27 +28,29 @@ export default {
 </script>
 
 <style scoped>
-button {
+div {
+  display: flex;
+  justify-content: center;
   width: 50%;
   padding: 2rem 0;
   border: none;
   transition-duration: 0.2s;
 }
 
-button:hover {
+div:hover {
   background: var(--square-grey);
 }
 
-button:active {
+div:active {
   opacity: 0.8;
 }
 
-.white {
+.w {
   color: var(--white);
   background: var(--square-black);
 }
 
-.black {
+.b {
   color: var(--black);
   background: var(--square-white);
 }

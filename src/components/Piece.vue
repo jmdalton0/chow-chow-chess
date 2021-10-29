@@ -1,27 +1,34 @@
 <template>
-  <font-awesome-icon
-    :class="color"
-    :icon="icon"
-    size="4x"
-  ></font-awesome-icon>
+    <div v-if="type !== 'e'">
+      <font-awesome-icon
+        :class="color"
+        :icon="icon"
+        size="4x"
+      ></font-awesome-icon>
+    </div>
 </template>
 
 <script>
 export default {
   name: "Piece",
   props: {
-    piece: {
+    color: {
+      type: String,
+      required: true,
+      validate: function (v) {
+        return v === "w" || v === "b";
+      },
+    },
+    type: {
       type: String,
       required: true,
     },
+    vector: {
+      type: String,
+      required: false,
+    },
   },
   computed: {
-    color() {
-      return this.piece.charAt(0);
-    },
-    type() {
-      return this.piece.charAt(1);
-    },
     icon() {
       if (this.type === "p") {
         return "chess-pawn";
@@ -43,7 +50,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .w {
   color: var(--white);
 }
@@ -53,6 +60,7 @@ export default {
 }
 
 .e {
-  color: red;
+  display: none;
 }
+
 </style>
