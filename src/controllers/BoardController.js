@@ -1,3 +1,21 @@
+let player = '';
+
+const BEG = -1;
+
+	function verticalMoveset(set, board, from) { 
+		for (let i = from[x]; i < BEG; i++) {
+		}
+		return set;
+	}
+
+	function pawnMoveset(board, from) {
+		return [];
+	}
+
+	function legalMovesRook(board, from) {
+		let i = 0;
+	}
+
 export default class BoardController {
 	static generateBoard(player) {
 		let board = [];
@@ -31,7 +49,13 @@ export default class BoardController {
 	}
 
 	static validate(board, from, to) {
-		console.log(board, from, to);
+		player = board[from[y]][from[x]].color;
+		piece = board[from[y]][from[x]].type;
+
+		if (to in legalMoves(board, from)) {
+			return true;
+		}
 		return false;
 	}
 }
+
