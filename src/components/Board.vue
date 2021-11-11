@@ -69,7 +69,7 @@ export default {
       if (this.board[i][j].color === this.player) {
         this.selected = [i, j];
       } else {
-        let vector = BoardController.validate(this.board, this.selected, [i,j]);
+        let vector = this.controller.validate(this.board, this.selected, [i,j]);
         if (vector === false) {
           this.illegal = [i, j];
         } else {
