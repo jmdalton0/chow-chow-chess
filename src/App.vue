@@ -5,15 +5,26 @@
   </header>
 
   <nav>
-    <action icon="plus" @click="state = 'colorSelect'"></action>
-    <action icon="chevron-left"></action>
-    <action icon="chevron-right"></action>
-    <action icon="cog"></action>
+    <transition name="slide">
+      <section v-if="state !== 'promotion'">
+        <action icon="plus" @click="state = 'colorSelect'"></action>
+        <action icon="chevron-left"></action>
+        <action icon="chevron-right"></action>
+        <action icon="cog"></action>
+      </section>
+    </transition>
+
+	<transition name="slide">
+      <section v-if="state === 'promotionChoice'">
+        <promotion-choice></promotion-choice>
+      </section>
+    </transition>
+
   </nav>
 
   <main>
     <transition name="slide">
-      <section v-if="state === 'colorSelect'">
+      <section id="player-choice" v-if="state === 'colorSelect'">
         <player-choice color="w" @choice="choosePlayer"></player-choice>
         <player-choice color="b" @choice="choosePlayer"></player-choice>
       </section>
@@ -21,9 +32,10 @@
 
     <transition name="slide">
       <section id="board" v-if="state === 'play'">
-        <board :player="player"></board>
+        <board :player="player" :promotion="promotion" @promotion="state = promotionChoice"></board>
       </section>
     </transition>
+
   </main>
 
   <footer>
@@ -50,15 +62,17 @@
 import Action from "./components/Action.vue";
 import Board from "./components/Board.vue";
 import PlayerChoice from "./components/PlayerChoice.vue";
+import PromotionChoice from "./components/PromotionChoice.vue";
 
 export default {
-  components: { Action, Board, PlayerChoice },
+  components: { Action, Board, PlayerChoice, PromotionChoice },
   name: "App",
   data() {
     return {
       state: "colorSelect",
       prevState: "colorSelect",
       player: null,
+      promotion: null,
     };
   },
   methods: {

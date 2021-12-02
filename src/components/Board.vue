@@ -15,8 +15,8 @@
 </template>
 
 <script scoped>
-import BoardController from "/src/controllers/BoardController.js";
 import Piece from "./Piece.vue";
+import { generateBoard, validateMove } from "../util/board.js";
 
 export default {
   components: { Piece },
@@ -53,6 +53,7 @@ export default {
       return this.illegal[0] === i && this.illegal[1] === j;
     },
     selectSquare(i, j) {
+      this.illegal = [];
       if (this.state === "select") {
         this.select(i, j);
       } else {
@@ -69,9 +70,13 @@ export default {
       if (this.board[i][j].color === this.player) {
         this.selected = [i, j];
       } else {
-        let vector = this.controller.validate(this.board, this.selected, [i,j]);
+        let vector = validateMove(this.board, this.selected, [i, j]);
         if (vector === false) {
           this.illegal = [i, j];
+          this.selected = [];
+          this.state = "select";
+        } else if (vector === "promotion") {
+          this.$emit('promotion');
         } else {
           this.movePiece(i, j, vector);
         }
@@ -88,7 +93,7 @@ export default {
     },
   },
   created() {
-    this.board = BoardController.generateBoard(this.player);
+    this.board = generateBoard(this.player);
   },
 };
 </script>
