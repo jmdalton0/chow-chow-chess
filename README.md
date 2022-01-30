@@ -22,3 +22,10 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+### If git does not connect to Gitlab via SSH
+eval `ssh-agent`
+kill <ssh-agent PID>
+git push
+
