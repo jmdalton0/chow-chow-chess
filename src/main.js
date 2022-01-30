@@ -1,43 +1,43 @@
 import {
-  createApp
-} from 'vue'
+	createApp
+} from 'vue';
 
-import App from './App.vue'
-
-import {
-  library
-} from '@fortawesome/fontawesome-svg-core'
+import App from './App.vue';
 
 import {
-  faPlus,
-  faChevronLeft,
-  faChevronRight,
-  faCog,
-  faChessPawn,
-  faChessRook,
-  faChessKnight,
-  faChessBishop,
-  faChessQueen,
-  faChessKing,
-  faExclamation
-} from '@fortawesome/free-solid-svg-icons'
+	library
+} from '@fortawesome/fontawesome-svg-core';
 
 import {
-  FontAwesomeIcon
-} from '@fortawesome/vue-fontawesome'
+	faPlus,
+	faChevronLeft,
+	faChevronRight,
+	faCog,
+	faChessPawn,
+	faChessRook,
+	faChessKnight,
+	faChessBishop,
+	faChessQueen,
+	faChessKing,
+	faExclamation
+} from '@fortawesome/free-solid-svg-icons';
+
+import {
+	FontAwesomeIcon
+} from '@fortawesome/vue-fontawesome';
 
 library.add(
-  faPlus,
-  faChevronLeft,
-  faChevronRight,
-  faCog,
-  faChessPawn,
-  faChessRook,
-  faChessKnight,
-  faChessBishop,
-  faChessQueen,
-  faChessKing,
-  faExclamation
+	faPlus,
+	faChevronLeft,
+	faChevronRight,
+	faCog,
+	faChessPawn,
+	faChessRook,
+	faChessKnight,
+	faChessBishop,
+	faChessQueen,
+	faChessKing,
+	faExclamation
 );
 
 const app = createApp(App);
@@ -45,3 +45,4 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.mount('#app');
+

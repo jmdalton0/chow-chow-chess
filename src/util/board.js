@@ -107,7 +107,7 @@ function isLegalPawnMove(board, from, to) {
 		}
 	}
 	if (isLegal && to[0] === 0) {
-		return "promotion";
+		return "promote";
 	}
 	return isLegal;
 }

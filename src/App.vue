@@ -1,170 +1,201 @@
 <template>
-  <header>
-    <h1>Chow Chow Chess</h1>
-    <img src="./assets/chow-chow.jpg" alt="chow chow" />
-  </header>
+	<header>
+		<h1>Chow Chow Chess</h1>
+		<img src="./assets/chow-chow.jpg" alt="chow chow" />
+	</header>
 
-  <nav>
-    <transition name="slide">
-      <section v-if="state !== 'promotion'">
-        <action icon="plus" @click="state = 'colorSelect'"></action>
-        <action icon="chevron-left"></action>
-        <action icon="chevron-right"></action>
-        <action icon="cog"></action>
-      </section>
-    </transition>
+	<nav>
+		<transition name="slide">
+			<section v-if="promote === false">
+				<Option v-model="start" icon="plus"/>
+				<Option v-model="back" icon="chevron-left"/>
+				<Option v-model="next" icon="chevron-right"/>
+				<Option v-model="settings" icon="cog"/>
+			</section>
 
-	<transition name="slide">
-      <section v-if="state === 'promotionChoice'">
-        <promotion-choice></promotion-choice>
-      </section>
-    </transition>
+			<section v-else>
+				<Option v-model="queen" icon="chess-queen"/>
+				<Option v-model="rook" icon="chess-rook"/>
+				<Option v-model="bishop" icon="chess-bishop"/>
+				<Option v-model="knight" icon="chess-knight"/>
+			</section>
+		</transition>
+	</nav>
 
-  </nav>
+	<main>
+		<transition name="slide">
+			<section v-if="state === 'start'" id="color-select">
+				<ColorSelect
+					v-model="color"
+				></ColorSelect>
+			</section>
 
-  <main>
-    <transition name="slide">
-      <section id="player-choice" v-if="state === 'colorSelect'">
-        <player-choice color="w" @choice="choosePlayer"></player-choice>
-        <player-choice color="b" @choice="choosePlayer"></player-choice>
-      </section>
-    </transition>
+			<section v-else-if="state === 'play'" id="board">
+				<Board
+					:color="color"
+					:promotion="promotion"
+					@promote="promote = true"
+				></Board>
+			</section>
+			
+			<section v-else id="settings">
+				<Settings></Settings>
+			</section>
+		</transition>
+	</main>
 
-    <transition name="slide">
-      <section id="board" v-if="state === 'play'">
-        <board :player="player" :promotion="promotion" @promotion="state = promotionChoice"></board>
-      </section>
-    </transition>
-
-  </main>
-
-  <footer>
-    <h6>
-      <a href="https://github.com/jmdalton0/chow-chow-chess">GitHub</a>
-    </h6>
-    <h6>Created by <a href="">Jesse Dalton</a></h6>
-    <h6>
-      Photo by
-      <a
-        href="https://unsplash.com/@alxndr_london?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
-        >Alexander London</a
-      >
-      on
-      <a
-        href="https://unsplash.com/s/photos/chow-chow?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
-        >Unsplash</a
-      >
-    </h6>
-  </footer>
+	<footer>
+		<h6><a href="https://github.com/jmdalton0/chow-chow-chess">GitHub</a></h6>
+		<h6>Created by <a href="https://jmd0.xyz">Jesse Dalton</a></h6>
+		<h6>Photo by
+			<a href="https://unsplash.com/@alxndr_london?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+				Alexander London
+			</a>
+			on
+			<a href="https://unsplash.com/s/photos/chow-chow?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+				Unsplash
+			</a>
+		</h6>
+	</footer>
 </template>
 
 <script>
-import Action from "./components/Action.vue";
-import Board from "./components/Board.vue";
-import PlayerChoice from "./components/PlayerChoice.vue";
-import PromotionChoice from "./components/PromotionChoice.vue";
+import Option from './components/Option.vue';
+import ColorSelect from './components/ColorSelect.vue';
+import Board from './components/Board.vue';
+import Settings from './components/Settings.vue';
 
 export default {
-  components: { Action, Board, PlayerChoice, PromotionChoice },
-  name: "App",
-  data() {
-    return {
-      state: "colorSelect",
-      prevState: "colorSelect",
-      player: null,
-      promotion: null,
-    };
-  },
-  methods: {
-    choosePlayer(player) {
-      this.player = player;
-      this.state = "play";
-    },
-  },
+	name: 'App',
+	components: { Option, ColorSelect, Board, Settings },
+	data() {
+		return {
+			state: 'start',
+			color: '',
+			promotion: '',
+			promote: false,
+			start: false,
+			back: false,
+			next: false,
+			settings: false,
+			queen: false,
+			rook: false,
+			bishop: false,
+			knight: false,
+		}
+	},
+	watch: {
+		start() {
+			this.color = '';
+			this.state = 'start';
+			this.start = false;
+		},
+		color() {
+			this.state = 'play';
+		},
+		settings() {
+			this.state = 'settings';
+			this.settings = false;
+		},
+		queen() {
+			this.promotion = 'q';
+			this.queen = false;
+			this.promote = false;
+		},
+		rook() {
+			this.promotion = 'r';
+			this.rook = false;
+			this.promote = false;
+		},
+		bishop() {
+			this.promotion = 'b';
+			this.bishop = false;
+			this.promote = false;
+		},
+		knight() {
+			this.promotion = 'n';
+			this.knight = false;
+			this.promote = false;
+		},
+	},
 };
 </script>
 
 <style>
+
 :root {
-  --text: #205060;
-  --square-white: #90959f;
-  --square-black: #70757f;
-  --square-grey: #80858f;
-  --white: #f0f5ff;
-  --black: #40454f;
-  --app-width: 45rem;
-  --slide-distance: 55rem;
+	--app-dim: 50rem;
+	--text: #205060;
+	--text-hover: #407080;
+	--text-active: #306070;
+	--white: #f0f5ff;
+	--black: #40454f;
+	--square-white: #90959f;
+	--square-black: #70757f;
+	--square-grey: #80858f;
 }
 
 * {
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-  font-family: Helvetica, sans-serif;
-  font-size: 14px;
-  color: var(--text);
-  width: var(--app-width);
-  margin: auto;
-  padding: 0 1rem;
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
+	color: var(--text);
+	display: flex;
+	justify-content: center;
 }
 
 header {
-  display: flex;
-  text-align: start;
-  justify-content: space-between;
-  align-items: flex-end;
-  width: 100%;
-  margin: 1rem 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin: 1rem 0;
 }
 
 nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin: 1rem 0;
-  border-radius: 1rem;
-  overflow: hidden;
+	position: relative;
+	height: 6rem;
 }
 
 main {
-  position: relative;
-  width: 100%;
-  height: var(--app-width);
+	position: relative;
+	height: 52rem;
 }
 
 section {
-  display: flex;
-  position: absolute;
-  width: 100%;
-  border: 0.5rem solid var(--text);
-  border-radius: 1rem;
-  box-sizing: border-box;
-  overflow: hidden;
+	display: flex;
+	position: absolute;
+	width: 100%;
+	margin: 1rem 0;
+	background-color: var(--text);
+	border: 0.5rem solid var(--text);
+	border-radius: 1rem;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 footer {
-  text-align: center;
-  margin: 1rem 0;
+	text-align: center;
+	margin: 2rem 0;
 }
 
 h1 {
-  font-size: 3.8em;
-  line-height: 50px;
+	font-size: 4em;
 }
 
 h6 {
-  font-size: 0.8em;
-  font-weight: normal;
-  margin-bottom: 0.3rem;
+	font-size: 0.9em;
+	font-weight: normal;
+	line-height: 1.5em;
 }
 
 a {
   text-decoration: none;
   color: var(--text);
-  transition-duration: 0.2s;
+  transition-duration: 0.1s;
 }
 
 a:hover {
@@ -172,29 +203,28 @@ a:hover {
 }
 
 img {
-  align-self: flex-end;
-  margin-left: 0.5rem;
   width: 8rem;
   border-radius: 1rem;
 }
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.5s ease;
+	transition: all 0.5s ease;
 }
 
 .slide-enter-from {
-  opacity: 0;
-  transform: translateX(var(--slide-distance));
+	transform: translateX(120%);
+	opacity: 0;
 }
 
 .slide-leave-to {
-  opacity: 0;
-  transform: translateX(calc(-1 * var(--slide-distance)));
+	transform: translateX(-120%);
+	opacity: 0;
 }
 
-#board {
-  height: 45rem;
-  box-sizing: border-box;
+#app {
+	width: var(--app-dim);
 }
+
 </style>
+
